@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ this.title }}{% endblock %}
+{% block body %}
+  <h1>{{ this.title }}</h1>
+  <p>{{ this.pub_date }}</p>
+  <p>{{ this.podcast_link|safe }}</p>
+  <p>{{ this.notes }}</p>
+{% endblock %}
