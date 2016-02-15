@@ -1,9 +1,6 @@
 {% extends "layout.html" %}
-
+{% from "macros/podcast.html" import render_podcast_episode %}
 {% block title %}{{ this.title }}{% endblock %}
 {% block body %}
-  <h1>{{ this.title }}</h1>
-  <p>{{ this.pub_date }}</p>
-  <p>{{ this.podcast_link|safe }}</p>
-  <p>{{ this.notes }}</p>
+  {{ render_podcast_episode(this) }}
 {% endblock %}

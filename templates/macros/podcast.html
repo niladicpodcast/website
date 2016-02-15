@@ -1,0 +1,13 @@
+{% macro render_podcast_episode(post, from_index=false) %}
+  {% if from_index %}
+    <h3><a href="{{ post|url }}">{{ post.title }}</a>&nbsp;<small>{{ post.pub_date }}</small></h3>
+  {% else %}
+    <h1>{{ post.title }}&nbsp;<small>{{ post.pub_date }}</small></h1>
+  {% endif %}
+  <div class="row">
+    <div class="small-6 columns">
+      <p>{{ post.podcast_link|safe }}</p>
+      <p>{{ post.notes }}</p>
+    </div>
+  </div>
+{% endmacro %}

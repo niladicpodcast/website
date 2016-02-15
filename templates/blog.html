@@ -3,9 +3,20 @@
 {% from "macros/pagination.html" import render_pagination %}
 {% block title %}{{ this.title }}{% endblock %}
 {% block body %}
+<div class="callout large primary">
+  <div class="row column text-center">
+    <h1>Niladic Blog</h1>
+    <h2 class="subheader">Ben and Cody's Thoughts</h2>
+  </div>
+</div>
+
+<div class="row medium-8 large-7 columns">
   {% for child in this.pagination.items %}
     {{ render_blog_post(child, from_index=true) }}
   {% endfor %}
 
   {{ render_pagination(this.pagination) }}
+
+</div>
+
 {% endblock %}
