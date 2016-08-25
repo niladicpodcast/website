@@ -1,4 +1,4 @@
-title: How to Setup Let's Encrypt and nginx
+title: How to Setup Let's Encrypt with nginx
 ---
 pub_date: 2016-05-15
 ---
@@ -79,7 +79,7 @@ server {
   ssl_certificate   /etc/letsencrypt/live/files.perspexis.com/fullchain.pem;
   ssl_certificate_key /etc/letsencrypt/live/files.perspexis.com/privkey.pem;
   ssl_trusted_certificate /etc/letsencrypt/live/files.perspexis.com/fullchain.pem;
-   
+
   # For Let's Encrypt renewal
   location /.well-known/acme-challenge {
     root /var/www/letsencrypt;

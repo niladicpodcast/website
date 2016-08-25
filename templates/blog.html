@@ -25,7 +25,7 @@
                             Problems look mighty small from 150 miles up
                         </h3>#}
                     </a>
-                    <p class="post-meta">Posted by <a href="#">{{ child.author }}</a> on {#{{ child.publication_date|dateformat }} #}</p>
+                    <p class="post-meta">Posted by <a href="#">{{ child.author }}</a> on {{ child.pub_date|dateformat }}</p>
                 </div>
                 <hr>
             {% endfor %}
