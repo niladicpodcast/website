@@ -1,11 +1,12 @@
 {% extends "layout.html" %}
 {% block title %}{{ this.title }}{% endblock %}
 {% block body %}
-  <div class="row">
-    <div class="small-12 columns">
-
-    <h2>{{ this.title }}</h2>
-    {{ this.body }}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <h2>{{ this.title }}</h2>
+                {{ this.body }}
+            </div>
+        </div>
     </div>
-  </div>
 {% endblock %}

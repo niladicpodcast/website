@@ -1,19 +1,97 @@
-title: Hello Website
+title: How to Setup Let's Encrypt and nginx
 ---
-pub_date: 2016-02-11
+pub_date: 2016-05-15
 ---
 author: Cody
 ---
 body:
 
-Example of a blog post.
+This is a guide to setting up Let's Encrypt when using nginx as a reverse proxy.
 
-Lorem ipsum dolor sit amet, at erant consectetuer vix, solet causae delicatissimi his in. Ne nisl vero theophrastus sit, hinc summo adolescens mea in. Rebum facilisi an mei, eum ne graeci accusata. Mel et ornatus commune. Minimum appareat intellegebat in eam, sea ferri timeam instructior ut, at sea hinc placerat disputando. Ei eros autem definitiones vim, mea ne decore quaeque, causae nostrud vix ea. Id eirmod dissentias definitiones sed, cu vim vero malis aliquando.
+Let's say you have a service running on localhost on port other than port 80 (ex. 8080).
 
-Id eum vitae legere iuvaret, te vim evertitur suscipiantur, eius erant et vel. Tollit assentior an pri, vel an sonet tamquam admodum. Ut autem laudem petentium vel, sed ex dolorum evertitur. An nulla primis platonem mei, dolorem volutpat complectitur ex sed, at noluisse luptatum assentior est. Choro essent utamur qui ex, ut labores antiopam consequat eam, mazim sensibus te vix. Te purto argumentum sea.
+Nginx will listen on port 80 and transfer traffic to the service or services only available internal to the server.
 
-Id pro mutat tractatos, has mazim delenit complectitur eu, id quis recteque disputationi est. Sed in posse veritus sensibus. Augue definiebas est ut. Oratio temporibus vim te. No diceret vituperata mei. Ad sale nemore eam, eu quo doctus gloriatur interesset. No his option impedit.
+If you would like to use a domain or a subdomain to access the service then add a DNS record for the server's IP address.
 
-Probatus pertinax ea quo, id vim corrumpit appellantur disputationi. Cum atqui euismod vivendo at, id duo habemus dignissim. Ei vel altera maluisset voluptaria. Ne quo saperet blandit urbanitas, iudico timeam pro eu.
+To get a certificate first use this nginx config.
+Replace ```domain.com``` with your domain or subdomain.
 
-Quo te alia accusam. Eu tractatos partiendo imperdiet sea, mel idque minim et, alia etiam adipisci vel ne. Quod quaestio eloquentiam sea in, labitur accumsan disputationi ad qui. Homero nominavi inciderint an usu. Causae prompta vocibus vim et, et vim populo albucius.
+```
+server {
+  listen 80;
+  server_name domain.com;
+  location /.well-known/acme-challenge {
+    root /var/www/letsencrypt;
+  }
+}
+```
+
+Create the web root
+
+```shell
+sudo mkdir -p /var/www/letsencrypt
+```
+
+Install Let's Encrypt
+
+```shell
+git clone https://github.com/letsencrypt/letsencrypt
+cd letsencrypt
+./letsencrypt-auto certonly -a webroot --webroot-path /var/www/letsencrypt --agree-tos --expand --text --email cody@perspexis.com -d domain.com -d sub1.domain.com -d sub2.domain.com
+```
+
+You can add additional ```-d ``` options.
+
+To renew the certs you can run.
+
+```shell
+/path/to/letsencrypt/letsencrypt-auto renew --renew-hook="systemctl reload nginx"
+```
+
+This will reload nginx if the cert is renewed.
+
+To automatically renew
+Make sure this is in the root crontab.
+```
+# Renew Let's Encrypt cert if required
+4 4 * * * /path/to/letsencrypt/letsencrypt-auto renew --renew-hook="systemctl reload nginx"
+```
+
+So now you have certificates for the services. Time to use them!
+
+nginx will handle the ```HTTPS``` traffic and send ```HTTP``` to the internal service.
+
+```
+# Redirect HTTP to HTTPS
+server {
+  listen 80 default;
+  server_name domain.com;
+  return 301 https://$server_name$request_uri;
+}
+
+server {
+  # Listen on HTTPS
+  listen 443 default ssl;
+  server_name localhost domain.com;
+
+  # Certificate
+  ssl_certificate   /etc/letsencrypt/live/files.perspexis.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/files.perspexis.com/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/files.perspexis.com/fullchain.pem;
+   
+  # For Let's Encrypt renewal
+  location /.well-known/acme-challenge {
+    root /var/www/letsencrypt;
+  }
+
+  # Redirect to service running on localhost
+  location / {
+    proxy_pass http://localhost:8080;
+  }
+}
+```
+
+
+---
+twitter_handle: Siecje
