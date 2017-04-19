@@ -1,6 +1,6 @@
-title: My Problems with Bitbucket Cloud
+title: My Problems with Bitbucket Cloud Pull Requests
 ---
-_discoverable: no
+_discoverable: yes
 ---
 _hidden: no
 ---
@@ -8,9 +8,9 @@ author: Cody
 ---
 body:
 
-I use Mercurial with the bookmark forky workflow. I use bookmarks and only the default named branch. Development happens in a fork and a pull request is created.
+I use Mercurial with the bookmark and a repo (fork) per user. I use bookmarks and only the default named branch. Development happens in a fork and a pull request is created.
 
-These are the problems I have encountered while using Bitbucket.
+These are the problems I have encountered while using Bitbucket Cloud.
 
 ## 1. You can't get the code of a pull request from a private fork.
 
@@ -32,7 +32,7 @@ A pull request source must be a head. So you can't create a pull request and pre
 The use case is if you need a new feature to be reviewed but you still want to use the feature for another feature.
 
 You can create another fork and push the additional commits to the new fork.
-Or you can do `hg rebase --keep` and then rebase the new commits after the pull request is merged.
+Or you can do `hg graft` and then rebase the new commits after the pull request is merged.
 Ideally a pull request source could be set to a bookmark, and if you move the bookmark then the pull request should update, if you don't move the bookmark but add commits on top of that commit, the pull request should not update.
 Since Mercurial supports merging non head commits, it would be nice if Bitbucket pull requests supported it as well.
 
@@ -100,7 +100,7 @@ o |   1 cody (2017-03-10)
 |/   mainline has moved
 o   0 cody (2017-03-10)
    initial
-$ 
+$
 ```
 
 ## 3. Pull requests don't show the destination bookmark
@@ -149,9 +149,9 @@ You can't just edit the pull request description, there is only the one edit for
 
 ## 7. Can't build CI for a pull request from another repo
 
-Bitbucket Pipelines won't build a PR from a fork. You can enable pipelines in the fork, but you can only trust the passing pipeline if there won't be a merge commit when you merge the pull request, since it hasn't tested the code when it is merged.
+Bitbucket Pipelines won't build a pull request from a fork. You can enable pipelines in the fork, but you can only trust the passing pipeline if there won't be a merge commit when you merge the pull request, since it hasn't tested the code when it is merged.
 
-Bitbucket pipelines is pretty new, but even Jenkins doesn't have a plugin that can merge and run on a pull request from another repo. 
+Bitbucket pipelines is pretty new, but even Jenkins doesn't have a plugin that can merge and run on a pull request from another repo.
 There is a plugin that looks like it will do this and even triggers when you create a pull request, but it just pulls down the destination repo and does a build, which is not obvious when you start using it.
 https://github.com/nishio-dens/bitbucket-pullrequest-builder-plugin
 
@@ -162,5 +162,21 @@ https://bitbucket.org/site/master/issues/13162/pull-requests-from-forks
 I have multiple pull requests for heads in the default branch. When I push to the default branch in the source repo it says all of the pull requests have been updated.
 And updating a pull request will make any comments outdated, even though the pull request didn't change.
 
+## 9. You can merge a pull request without viewing the current version
+
+If you are viewing a pull request and someone adds a commit and updates the pull request, you can merge the pull request without viewing the new commit. When you merge the pull request both commits are merged.
+
+## 10. You can't create a pull request for a fork of the main repo
+
+If you are reviewing a pull request for a repo and you want to suggest changes to the pull request, what can you do?
+
+I thought you could simply create a pull request from your fork to the other person's fork. But you can only create a pull request from your fork for the main repo.
+
+On GitHub you go to the destination repo to create the pull request so the experience is a bit cleaner.
+
+As a workaround you can create another fork of the fork.
+
 ---
 twitter_handle: Siecje
+---
+pub_date: 2017-04-19
