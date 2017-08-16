@@ -10,6 +10,8 @@ body:
 
 I use Mercurial with bookmarks instead of named branches and a repo (fork) per user. I only have the default named branch. Development happens in a fork and a pull request is created.
 
+This is an example of my workflow https://bitbucket.org/Siecje/hg_setup/src/default/workflow.md?fileviewer=file-view-default
+
 These are the problems I have encountered while using Bitbucket Cloud.
 
 ## 1. You can't get the code of a pull request from a private fork.
