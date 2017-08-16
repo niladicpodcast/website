@@ -8,33 +8,38 @@ author: Cody
 ---
 body:
 
-I use Mercurial with the bookmark and a repo (fork) per user. I use bookmarks and only the default named branch. Development happens in a fork and a pull request is created.
+I use Mercurial with bookmarks instead of named branches and a repo (fork) per user. I only have the default named branch. Development happens in a fork and a pull request is created.
 
 These are the problems I have encountered while using Bitbucket Cloud.
 
 ## 1. You can't get the code of a pull request from a private fork.
 
-The diff of a Pull request is not the greatest, especially for large diffs. Sometimes you want to have the code of a pull request locally, to run tests or look at the code in your preferred editor with syntax highlighting and the ability to jump to definition and search for other uses.
+The diff of a Pull request is not the greatest, especially for large diffs.
+Sometimes you want to have the code of a pull request locally,
+to run tests or look at the code in your preferred editor with syntax highlighting, the ability to jump to definition and search for other uses.
 
 If you have read access to the source repo then you can clone the source repo. If it is a public repo then everyone has read access by definition.
 However if you are working with a private repo with private forks then by default you won't have access.
-You can view the commits in the pull request but you can't get them locally.
+You can view the changes in the pull request but you can't get them locally.
 
 Each private fork needs to add read access for the rest of the team.
-Fortunately you can add a group from the original repo, but it would be nice if you could enforce that all forks have a certain user and group access.
+Fortunately you can add a group from the original repo, but it would be nice if you could enforce that all forks have certain user and group access.
 
 GitHub creates a branch in the pull request destination repo that you can pull down from the destination remote repo, so you don't need access to the source repo.
 
 ## 2. You can't have a pull request source be a specific commit
 
-A pull request source must be a head. So you can't create a pull request and prevent it from automatically updating and then add additional commits to the commit in the pull request, without having them show up in the pull request.
+A pull request source must be a head. So you can't create a pull request and prevent it from automatically updating
+and then add additional commits to the commit in the pull request, without having them show up in the pull request.
 
 The use case is if you need a new feature to be reviewed but you still want to use the feature for another feature.
 
 You can create another fork and push the additional commits to the new fork.
-Or you can do `hg graft` and then rebase the new commits after the pull request is merged.
-Ideally a pull request source could be set to a bookmark, and if you move the bookmark then the pull request should update, if you don't move the bookmark but add commits on top of that commit, the pull request should not update.
-Since Mercurial supports merging non head commits, it would be nice if Bitbucket pull requests supported it as well.
+Or you can do `hg graft` and then rebase the new commits after the pull request is merged
+and `hg prune` the duplicate commits from the graft.
+
+Ideally a pull request source could be set to a bookmark, and if you move the bookmark then the pull request would update, if you don't move the bookmark but add commits on top of that commit, the pull request should not update.
+Since Mercurial supports merging non head commits, it would be nice if you could do it in a pull request.
 
 Just to show that Mercurial supports this
 
@@ -105,29 +110,30 @@ $
 
 ## 3. Pull requests don't show the destination bookmark
 
-When you are creating a pull request you set the source and destination, but when you are viewing an already created pull request you can't see the destination bookmark, only the branch name.
+When you create a pull request you set the source and destination, but when you are viewing an existing pull request you can't see the destination bookmark, only the branch name.
 Since I only have the default branch and use bookmarks for multiple heads, I can't see the destination bookmark. So I have to click merge without knowing where the commits are going to end up.
 It also doesn't show the bookmark of the source in the case you want to clone the source repo and manually merge you have to click on the commit and see the bookmark or use the commit hash.
 
 ## 4. Merging pull requests doesn't always move the destination bookmark.
 
-My pull requests always have a destination bookmark, but unless the source commit has the same bookmark and there is no merge commit going to be added by merging the pull request the bookmark doesn't move.
+My pull requests always have a destination bookmark, but unless the source commit has the same bookmark and there is no merge commit added by merging the pull request the bookmark doesn't move.
 I think it should always move the bookmark, because the bookmark is essentially the "branch" and should be on the head of the "branch". Though there are cases where you want to have a bookmark for a commit that is not a head.
 
 The default behaviour should be to move the destination bookmark and maybe add a checkbox to the pull request to prevent the destination bookmark from moving.
 
 The cases where the destination bookmark does not move are as follows:
 
-1. When there is no merge commit but different bookmark
-2. When there is a merge commit but different bookmark
-3. When there is a merge commit with same bookmark and another bookmark
-4. When there is a merge commit with same bookmark
+1. When there is no merge commit but source and destination bookmarks are different
+2. When there is a merge commit but with different bookmarks
+3. When there is a merge commit with the same bookmarks
+4. When there is a merge commit with the same bookmarks
 
 The case when the destination bookmark does move
 1. No merge commit and source bookmark is the same as the destination bookmark
 
+**Bitbucket Issue**: https://bitbucket.org/site/master/issues/12287/pull-requests-merged-ontop-of-a-mercurial
 
-## 5. When you push a successor commit the pull request doesn't update
+## 5. When you push a successor commit the pull request doesn't always update
 
 With Mercurial evolution support in Bitbucket Labs, you can now push a successor commit to replace a commit, which makes the original commit obsolete.
 However pull requests do not automatically update, they still have the old and now obsolete commits as the source.
@@ -136,16 +142,21 @@ You can edit the pull request and select the new commits as the source.
 
 Ideally you should be able to set the source to be a bookmark and when that bookmark changes (ex. to a successor commit) then the pull request should update.
 
+I have had this happen once, though it is not clear why it doesn't always happen.
+
 ## 6. Updating a pull request is buggy
 
 When you update a pull request the destination is set to first commit sorted by commit hash alphabetically, which is weird because when you create a pull request the destination is the newest commit in that branch.
 
 This means you have to be careful and set it back to what it was before you clicked *Edit*.
 
-Also sometimes editing the pull request causes the destination to be the wrong commit and doesn't work even though you changed the destination. When this happens I just make a new pull request and close the bugged one. This causes two emails to be sent for the reviewers.
+Also sometimes editing the pull request causes the destination to be the wrong commit and doesn't work even though you changed the destination.
+Or the source is set to default and shows the most recent commits added to the repo and you can't change it.
+When this happens I just make a new pull request and close the bugged one. This causes two emails to be sent for the reviewers.
 
-Even if pull requests would follow a bookmark you might still need to edit a pull request to update the description.
 You can't just edit the pull request description, there is only the one edit form and as previously mentioned it changes the destination and you risk the pull request being bugged.
+
+Update: 2017-08-16 When editting a pull request the destination is no longer the first alphabetically commit, It is the head that was most recently updated.
 
 ## 7. Can't build CI for a pull request from another repo
 
@@ -157,16 +168,21 @@ https://github.com/nishio-dens/bitbucket-pullrequest-builder-plugin
 
 https://bitbucket.org/site/master/issues/13162/pull-requests-from-forks
 
-## 8. Pull request say they have been updated when they have not
+## 8. Pull requests say they have been updated when they have not
 
 I have multiple pull requests for heads in the default branch. When I push to the default branch in the source repo it says all of the pull requests have been updated.
-And updating a pull request will make any comments outdated, even though the pull request didn't change.
 
 ## 9. You can merge a pull request without viewing the current version
 
 If you are viewing a pull request and someone adds a commit and updates the pull request, you can merge the pull request without viewing the new commit. When you merge the pull request both commits are merged.
 
-## 10. You can't create a pull request for a fork of the main repo
+## 10 You can merge a pull request with obsolete commits
+
+If you are viewing a pull request with drafts commits and they are replace with a successor commit then it is possible to merge the pull request with the obsolete commits.
+
+**Bitbucket Issue**: https://bitbucket.org/site/master/issues/14613/hg-prevent-merging-a-pr-with-obsolete
+
+## 11. You can't create a pull request for another fork of the main repo
 
 If you are reviewing a pull request for a repo and you want to suggest changes to the pull request, what can you do?
 
