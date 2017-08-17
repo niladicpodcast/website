@@ -1,0 +1,121 @@
+title: Install PyQt5 Inside a Virtual Environment
+---
+author: Cody
+---
+body:
+
+A <a href="https://docs.python.org/3/library/venv.html" target="_blank">virtual environment</a>
+allows you to install specific versions of Python distribution packages in a contained environment without contaminating the system Python.
+This allows you to have multiple versions of PyQt5 installed on the same system
+so you can work on different projects that use different versions of PyQt5.
+
+Download the open source online installer from https://www.qt.io/
+
+```shell
+wget http://mirror.csclub.uwaterloo.ca/qtproject/archive/online_installers/3.0/qt-unified-linux-x64-3.0.0-online.run
+chmod u+x qt-unified-linux-x64-3.0.0-online.run
+./qt-unified-linux-x64-3.0.0-online.run
+```
+
+Navigate the installation wizard. Skip the sign up and install version Qt 5.9.1.
+
+Download SIP source code
+
+https://www.riverbankcomputing.com/software/sip/download
+
+Download PyQt5 source code
+
+https://www.riverbankcomputing.com/software/pyqt/download5
+
+Create a virtualenv to install PyQt5 into
+
+```shell
+python3 -m venv ~/.virtualenvs/pyqt5
+```
+
+Install sip
+
+```
+cd ~/Downloads/sip-4.19.4.dev1708131720/
+~/.virtualenvs/pyqt5/bin/python configure.py
+make
+make install
+```
+
+Now sip is installed in that virtualenv.
+
+Install PyQt5
+
+In order to build `QML` support I had to install `libgl1-mesa-dev` on Ubuntu 16.04.
+See Bonus #2 for how I figured out which package to install.
+
+```shell
+sudo apt-get install libgl1-mesa-dev
+```
+
+```
+cd ~/Downloads/PyQt5_gpl-5.9.1.dev1707250927/
+~/.virtualenvs/pyqt5/bin/python configure.py --qmake ~/Qt/5.9.1/gcc_64/bin/qmake --sip ~/.virtualenvs/pyqt5/bin/sip
+make
+make install
+```
+
+## Bonus #1 Add to pip freeze
+
+If you pip freeze you won't see `sip` and `PyQt5` because they don't have a `.dist_info` directory.
+```
+~/.virtualenvs/pyqt5/bin/pip freeze
+pkg-resources==0.0.0
+```
+
+You can however manually create them.
+
+```shell
+mkdir ~/.virtualenvs/pyqt5/lib/python3.5/site-packages/sip-4.19.4.dev1708131720.dist-info
+touch ~/.virtualenvs/pyqt5/lib/python3.5/site-packages/sip-4.19.4.dev1708131720.dist-info/INSTALLER
+siecje@kde ~> mkdir ~/.virtualenvs/pyqt5/lib/python3.5/site-packages/PyQt5-5.9.1.dev1707250927.dist-info
+siecje@kde ~> touch ~/.virtualenvs/pyqt5/lib/python3.5/site-packages/PyQt5-5.9.1.dev1707250927.dist-info/INSTALLER
+~/.virtualenvs/pyqt5/bin/pip freeze
+pkg-resources==0.0.0
+PyQt5==5.9.1.dev1707250927
+sip==4.19.4.dev1708131720
+```
+
+
+## Bonus #2 How I figured out I needed that Ubuntu package
+
+When I first ran `configure.py` for PyQt5 it didn't say it would build QtQml.
+
+```
+Checking to see if the QtQml module should be built...
+# ...
+These PyQt5 modules will be built: QtCore, QtNetwork, QtXml, QtXmlPatterns,
+QtDBus, QtWebSockets, QtWebChannel, QtNfc.
+```
+
+So I ran it again with `--verbose` and saw there was an error for `QtQml`.
+
+```shell
+/usr/bin/ld: cannot find -lGL
+collect2: error: ld returned 1 exit status
+cfgtest_QtQml.mk:242: recipe for target 'cfgtest_QtQml' failed
+```
+
+`-lGL` means that `ld` couldn't find `libGL.so`, that's how `ld` looks for libraries.
+
+Then I searched the Ubuntu packages for the file `libGL.so`.
+
+```
+dpkg -S libGL.so
+libgl1-mesa-glx:i386: /usr/lib/i386-linux-gnu/mesa/libGL.so.1
+libgl1-mesa-dev:amd64: /usr/lib/x86_64-linux-gnu/mesa/libGL.so
+libgl1-mesa-glx:amd64: /usr/lib/x86_64-linux-gnu/mesa/libGL.so.1
+libgl1-mesa-glx:amd64: /usr/lib/x86_64-linux-gnu/mesa/libGL.so.1.2.0
+libgl1-mesa-glx:i386: /usr/lib/i386-linux-gnu/mesa/libGL.so.1.2.0
+libgl1-mesa-dev:amd64: /usr/lib/x86_64-linux-gnu/libGL.so
+```
+
+---
+pub_date: 2017-08-17
+---
+twitter_handle: Siecje
