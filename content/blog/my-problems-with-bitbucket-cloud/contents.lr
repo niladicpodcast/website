@@ -10,7 +10,7 @@ body:
 
 I use Mercurial with bookmarks instead of named branches and a repo (fork) per user. I only have the default named branch. Development happens in a fork and a pull request is created.
 
-This is an example of my workflow https://bitbucket.org/Siecje/hg_setup/src/default/workflow.md?fileviewer=file-view-default
+This is an example of my <a href="https://bitbucket.org/Siecje/hg_setup/src/default/workflow.md?fileviewer=file-view-default" target="_blank">workflow</a>.
 
 These are the problems I have encountered while using Bitbucket Cloud.
 
@@ -133,7 +133,7 @@ The cases where the destination bookmark does not move are as follows:
 The case when the destination bookmark does move
 1. No merge commit and source bookmark is the same as the destination bookmark
 
-**Bitbucket Issue**: https://bitbucket.org/site/master/issues/12287/pull-requests-merged-ontop-of-a-mercurial
+<a href="https://bitbucket.org/site/master/issues/12287/pull-requests-merged-ontop-of-a-mercurial" target="_blank">Bitbucket Issue</a>
 
 ## 5. When you push a successor commit the pull request doesn't always update
 
@@ -168,7 +168,7 @@ Bitbucket pipelines is pretty new, but even Jenkins doesn't have a plugin that c
 There is a plugin that looks like it will do this and even triggers when you create a pull request, but it just pulls down the destination repo and does a build, which is not obvious when you start using it.
 https://github.com/nishio-dens/bitbucket-pullrequest-builder-plugin
 
-https://bitbucket.org/site/master/issues/13162/pull-requests-from-forks
+<a href="https://bitbucket.org/site/master/issues/13162/pull-requests-from-forks" target="_blank">Bitbucket Issue</a>
 
 ## 8. Pull requests say they have been updated when they have not
 
@@ -182,7 +182,7 @@ If you are viewing a pull request and someone adds a commit and updates the pull
 
 If you are viewing a pull request with drafts commits and they are replace with a successor commit then it is possible to merge the pull request with the obsolete commits.
 
-**Bitbucket Issue**: https://bitbucket.org/site/master/issues/14613/hg-prevent-merging-a-pr-with-obsolete
+<a href="https://bitbucket.org/site/master/issues/14613/hg-prevent-merging-a-pr-with-obsolete" target="_blank">Bitbucket Issue</a>
 
 ## 11. You can't create a pull request for another fork of the main repo
 

@@ -6,7 +6,7 @@ author: Cody
 ---
 body:
 
-[Let's Encrypt](https://letsencrypt.org/) is a service to get free HTTPS certificates and automate renewing them.
+<a href="https://letsencrypt.org/" target="_blank">Let's Encrypt</a> is a service to get free HTTPS certificates and automate renewing them.
 This is a guide to setting up Let's Encrypt when using nginx as a reverse proxy.
 
 Let's say you have a service running on localhost on port other than port 80 (ex. 8080).
