@@ -19,21 +19,21 @@ chmod u+x qt-unified-linux-x64-3.0.0-online.run
 
 Navigate the installation wizard. Skip the sign up and install version Qt 5.9.1.
 
-Download SIP source code
+## Download SIP source code
 
 https://www.riverbankcomputing.com/software/sip/download
 
-Download PyQt5 source code
+## Download PyQt5 source code
 
 https://www.riverbankcomputing.com/software/pyqt/download5
 
-Create a virtualenv to install PyQt5 into
+## Create a virtualenv to install PyQt5 into
 
 ```shell
 python3 -m venv ~/.virtualenvs/pyqt5
 ```
 
-Install sip
+## Install sip
 
 ```
 cd ~/Downloads/sip-4.19.4.dev1708131720/
@@ -44,7 +44,16 @@ make install
 
 Now sip is installed in that virtualenv.
 
-Install PyQt5
+```shell
+~/.virtualenvs/pyqt5/bin/python
+Python 3.5.2 (default, Sep 14 2017, 22:51:06)
+[GCC 5.4.0 20160609] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sip
+>>> # Works!
+```
+
+## Install PyQt5
 
 In order to build `QML` support I had to install `libgl1-mesa-dev` on Ubuntu 16.04.
 See Bonus #2 for how I figured out which package to install.
@@ -60,7 +69,7 @@ make
 make install
 ```
 
-## Bonus #1 Add to pip freeze
+### Bonus #1 Add to pip freeze
 
 If you pip freeze you won't see `sip` and `PyQt5` because they don't have a `.dist_info` directory.
 ```
@@ -82,7 +91,7 @@ sip==4.19.4.dev1708131720
 ```
 
 
-## Bonus #2 How I figured out I needed that Ubuntu package
+### Bonus #2 How I figured out I needed that Ubuntu package
 
 When I first ran `configure.py` for PyQt5 it didn't say it would build QtQml.
 
