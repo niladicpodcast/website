@@ -178,7 +178,7 @@ I have multiple pull requests for heads in the default branch. When I push to th
 
 If you are viewing a pull request and someone adds a commit and updates the pull request, you can merge the pull request without viewing the new commit. When you merge the pull request both commits are merged.
 
-## 10 You can merge a pull request with obsolete commits
+## 10. You can merge a pull request with obsolete commits
 
 If you are viewing a pull request with drafts commits and they are replace with a successor commit then it is possible to merge the pull request with the obsolete commits.
 
@@ -193,6 +193,19 @@ I thought you could simply create a pull request from your fork to the other per
 On GitHub you go to the destination repo to create the pull request so the experience is a bit cleaner.
 
 As a workaround you can create another fork of the fork.
+
+## 12. No rebase when a pull request is accepted
+
+If I work on a feature and create a pull request, I can update to its parent and work on the second feature and create another pull request.
+But when the second pull request is accepted there will be a merge commit in the repo. To avoid merge commits I would need to rebase after the first pull request is accepted.
+This means reviewers could only review on pull request at a time.
+
+As a workaround you can just commit the second feature as child of the first feature and then only have one pull request
+and ask that the reviewer look at each commit as if it is its own pull request.
+
+This is not ideal because it is good to have small commits that can be reversed if needed and this encourages one commit per feature.
+
+Once Mercurial has an in memory merge then rebase can be done without the working directory of the repo.
 
 ---
 twitter_handle: Siecje
