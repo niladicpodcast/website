@@ -9,7 +9,7 @@ allows you to install specific versions of Python distribution packages in a con
 This allows you to have multiple versions of PyQt5 installed on the same system
 so you can work on different projects that use different versions of PyQt5.
 
-Download the open source online installer from https://www.qt.io/
+Download the open source online installer from https://www.qt.io/. Use the maintainence tool if you already have Qt installed.
 
 ```shell
 wget http://mirror.csclub.uwaterloo.ca/qtproject/archive/online_installers/3.0/qt-unified-linux-x64-3.0.0-online.run
@@ -30,14 +30,19 @@ https://www.riverbankcomputing.com/software/pyqt/download5
 <h2 id="venv"></a>Create a virtualenv to install PyQt5 into</h2>
 
 ```shell
+sudo apt-get install python3-venv
 python3 -m venv ~/.virtualenvs/pyqt5
+source ~/.virtualenvs/pyqt5/bin/activate
+# It is better to source the venv instead of just using the full path to the venv python
+# because it will use that python for the paths in qmldir for the pyqt5qmlplugin example
+# Yes the examples in the download actually get changed when you build pyqt5.
 ```
 
 <h2 id="install-sip">Install sip</h2>
 
 ```
 cd ~/Downloads/sip-4.19.4.dev1708131720/
-~/.virtualenvs/pyqt5/bin/python configure.py
+python configure.py
 make
 make install
 ```
@@ -56,7 +61,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 <h2 id="install-pyqt5">Install PyQt5</h2>
 
 In order to build `QML` support I had to install `libgl1-mesa-dev` on Ubuntu 16.04.
-See Bonus #2 for how I figured out which package to install.
+See <a href="#bonus-2">Bonus #2</a> for how I figured out which package to install.
 
 ```shell
 sudo apt-get install libgl1-mesa-dev
@@ -64,7 +69,7 @@ sudo apt-get install libgl1-mesa-dev
 
 ```
 cd ~/Downloads/PyQt5_gpl-5.9.1.dev1707250927/
-~/.virtualenvs/pyqt5/bin/python configure.py --qmake ~/Qt/5.9.1/gcc_64/bin/qmake --sip ~/.virtualenvs/pyqt5/bin/sip
+python configure.py --qmake ~/Qt/5.9.1/gcc_64/bin/qmake --sip ~/.virtualenvs/pyqt5/bin/sip
 make
 make install
 ```
