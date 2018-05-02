@@ -103,7 +103,9 @@ ssh-keygen -t rsa -C "email@example.com"
 ssh-copy-id $user@$host
 ```
 
-And now I can use virt-manager from Windows 10 and it works great.
+And now I can use virt-manager from Windows 10 and it works great. Well sometimes
+the bottom of the VM display is white and only works on my main monitor. When this
+happens I restart Xming and launch virt-manager again.
 
 ---
 twitter_handle: Siecje
