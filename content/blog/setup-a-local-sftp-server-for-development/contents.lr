@@ -25,7 +25,7 @@ Create the SFTP directory. The ChrootDirectory set in `sshd_config` must be owne
 sudo mkdir /sftp/
 sudo chown root:sftponly /sftp/
 sudo chmod 2755 /sftp/
-# The 2 is for g+s
+# The leading 2 is for g+s
 ```
 
 If the ChrootDirectory is not owned by root you will get the following error:
@@ -52,7 +52,7 @@ Match Group sftponly
 sudo service ssh restart
 ```
 
-You can create directories inside and just copy files into and they will be owned by the `sftponly` group.
+You can create directories inside and just copy files into them and they will be owned by the `sftponly` group.
 
 ```shell
 sudo mkdir /sftp/files/
